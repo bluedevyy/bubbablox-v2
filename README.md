@@ -1,6 +1,6 @@
 <div align="center">
   <h1>BubbaBlox Setup Guide</h1>
-  <p><i>A refined walkthrough for setting up the BubbaBlox environment.</i></p>
+  <p><i>A refined walkthrough for setting up the BubbaBlox Source Code.</i></p>
 </div>
 
 <hr />
