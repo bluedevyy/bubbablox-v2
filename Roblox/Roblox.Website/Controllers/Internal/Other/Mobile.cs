@@ -26,6 +26,8 @@ using Npgsql;
 using Dapper;
 using Roblox.Dto.Users;
 
+// if you see this, i dont really think this ever worked, atleast i didnt use it, i just made a new file, and deleted this.
+// im probably wrong but idk
 
 namespace Roblox.Website.Controllers 
 {

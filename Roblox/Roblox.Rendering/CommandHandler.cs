@@ -13,6 +13,9 @@ using System.Net;
 using System.Xml;
 using Roblox;
 
+// also for your own sake just fully get rid of 2016 renderer.
+// please rewrite this and make it better, i could do this in the future, but idk yet
+
 namespace Roblox.Rendering
 {
     public static class CommandHandler

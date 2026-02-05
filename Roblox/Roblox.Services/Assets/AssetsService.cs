@@ -1,3 +1,5 @@
+#region consider rewriting all of this
+
 using System;
 using System.Diagnostics;
 using System.Dynamic;

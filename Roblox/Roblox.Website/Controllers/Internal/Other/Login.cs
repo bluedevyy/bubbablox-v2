@@ -506,19 +506,10 @@ namespace Roblox.Website.Controllers
 				var discordinfo = await httpClient.GetAsync("https://discord.com/api/users/@me");
 				var discordUser = await discordinfo.Content.ReadFromJsonAsync<DiscordUser>();
 
-				long ID;
-				// THIS IS TESTING. Remove in the future plz
-				if (discordUser.id == "713175126358884483")
-				{
-					ID = 1;
-				}
-				else
-				{
-					ID = await services.users.GetUserIdFromDiscordId(discordUser.id);
-					if (ID == 0)
-					{
-						return Redirect("/?loginmsg=There is no account linked to this Discord");
-					}
+				long ID = await services.users.GetUserIdFromDiscordId(discordUser.id);
+
+				if(ID == 0) {
+					return Redirect("/?loginmsg=No linked account found");
 				}
 
 				var info = await services.users.GetUserById(ID);

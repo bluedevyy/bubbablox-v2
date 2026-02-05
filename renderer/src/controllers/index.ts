@@ -1,6 +1,6 @@
-// this could still be split into separate files for better organization (but i don't care)
-// i removed all the game server stuff, and just turned it into exclusively a renderer
-// everything is fixed (i removed texture generation because it would freeze the whole ws server? EDIT: fixed, but it's too late now so i don't really care it just uses the content url onsite now)
+// yucky mess
+// i might rewrite this in future. personally for cartii, i completely got rid of the renderer, and also moved all rendering shit to the gameserver stuff.
+
 import StdExceptions from '../helpers/Exceptions';
 import fs = require('fs');
 import path = require('path');

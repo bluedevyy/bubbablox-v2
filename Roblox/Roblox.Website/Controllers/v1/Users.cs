@@ -151,6 +151,10 @@ public class UsersControllerV1 : ControllerBase
             data = entries,
         };
     }
+
+    // i removed this, tbh no point in using 2020 beta menu as its dogshit anyway
+    // if u want a menu, pretty sure 2021 has it and it works better from what i know
+
 	// wtf was i doing
 	[HttpGet("user/get-2020-menu")]
 	public async Task<dynamic> Get2020MenuPreference()
