@@ -56,6 +56,7 @@ Roblox.Configuration.AdminBundleDirectory = configuration.GetSection("Directorie
 Roblox.Configuration.EconomyChatBundleDirectory = configuration.GetSection("Directories:EconomyChatBundle").Value;
 Roblox.Configuration.RccServicePath = configuration.GetSection("Directories:RccServicePath").Value;
 Roblox.Configuration.RccService2015Path = configuration.GetSection("Directories:RccService2015Path").Value;
+Roblox.Configuration.CorsMiddlewareUrl = configuration.GetSection("CorsMiddlewareUrl").Value;
 Roblox.Configuration.RccService2017Path = configuration.GetSection("Directories:RccService2017Path").Value;
 Roblox.Configuration.RccService2018Path = configuration.GetSection("Directories:RccService2018Path").Value;
 Roblox.Configuration.RccService2020Path = configuration.GetSection("Directories:RccService2020Path").Value;
