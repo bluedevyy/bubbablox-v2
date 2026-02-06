@@ -29,7 +29,7 @@
 
 <h2>2. Server Requirements</h2>
 <ul>
-  <li><strong>OS:</strong> Windows 10/11 or Windows Server (Use Wine/Proxmox for Linux).</li>
+  <li><strong>OS:</strong> Windows 10/11 or Windows Server (Use Wine/Proxmox for Linux). (i might add basic support for linux in the future)</li>
   <li><strong>Domain:</strong> Must be <strong>exactly 10 characters</strong> (e.g., <code>yoursite.com</code>).</li>
   <li><strong>Networking:</strong> Domain must support both HTTP and HTTPS.</li>
 </ul>
@@ -73,6 +73,10 @@
   <li>Run <code>python Generate.py</code> to create your public/private keys.</li>
   <li><strong>For 2016/2018 RCC:</strong> Search for <code>BGIAA</code> in HxD and replace the key with the content of your <code>PublicKey2016.pub</code>.</li>
   <li><strong>For 2020 RCC:</strong> Search for <code>MIIBI</code> and replace <strong>every</strong> instance found with your 2020 public key.</li>
+</ol>
+
+<ol>
+  <li>Could in future make a DLL that can auto patch all of this for you just to make it easier. ( would inject everytime RCC starts )</li>
 </ol>
 
 <hr />
