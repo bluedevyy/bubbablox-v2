@@ -29,13 +29,13 @@ app.get("/asset/", async (req, res) => {
         }
 
         const assetDeliveryApis = [
-            "https://assetdelivery.synt2x.xyz/v1/asset",
-            "https://assetdelivery.pekora.zip/v1/asset",
+            "https://assetdelivery.synt2x.xyz/v1/asset", // might require a cookie as danyal wants syntax 2 to be a wannabe roblox. lol..
+            "https://assetdelivery.pekora.zip/v1/asset", // ok
             "https://assetdelivery.cartii.fit/v1/asset", // we got a very fast proxy here at cartii.fit | its written in rust. :O
-            "https://assetdelivery.kornet.lat/v1/asset",
-            "https://assetdelivery.lureon.fit/v1/asset",
-            "https://bt.zawg.ca/v1/asset",
-            "https://assetdelivery.jewblox.de/v1/asset"
+            "https://assetdelivery.kornet.lat/v1/asset", // no
+            "https://assetdelivery.lureon.fit/v1/asset", // no
+            "https://bt.zawg.ca/v1/asset", // ok
+            "https://assetdelivery.jewblox.de/v1/asset" // fuck you jewblox
         ];
 
         const headers = {
