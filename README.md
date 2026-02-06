@@ -75,6 +75,7 @@
   <li><strong>For 2020 RCC:</strong> Search for <code>MIIBI</code> and replace <strong>every</strong> instance found with your 2020 public key.</li>
 </ol>
 
+<h2>Info</h2>
 <ol>
   <li>Could in future make a DLL that can auto patch all of this for you just to make it easier. ( would inject everytime RCC starts )</li>
 </ol>
