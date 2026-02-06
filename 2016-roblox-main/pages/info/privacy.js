@@ -43,7 +43,7 @@ const Privacy = () => {
       <iframe
         className={classes.iframe}
         src={iframeSrc}
-        title="Privacy Policy - BubbaBlox"
+        title="Privacy Policy"
         onError={(e) => {
           console.error("iframe failed to load:", e);
         }}

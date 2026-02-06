@@ -21,7 +21,7 @@ const AvatarPage = () => {
         return (
             <Theme2016>
                 <Head>
-                    <title>Avatar - BubbaBlox</title>
+                    <title>Avatar</title>
                 </Head>
                 <div className="container flex flex-column ssp">
                     <AdBanner context="MyCharacterPage"/>
@@ -34,7 +34,7 @@ const AvatarPage = () => {
     return (
         <Theme2016>
             <Head>
-                <title>Avatar - BubbaBlox</title>
+                <title>Avatar</title>
             </Head>
             <div className="container flex flex-column ssp">
                 <AdBanner context="MyCharacterPage"/>

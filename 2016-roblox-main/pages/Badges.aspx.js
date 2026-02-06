@@ -43,7 +43,7 @@ const Badges = () => {
       <iframe
         className={classes.iframe}
         src={iframeSrc}
-        title="Badges - BubbaBlox"
+        title="Badges"
         onError={(e) => {
           console.error("iframe failed to load:", e);
         }}

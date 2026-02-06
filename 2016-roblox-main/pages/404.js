@@ -43,7 +43,7 @@ const NotFound = () => {
       <iframe
         className={classes.iframe}
         src={iframeSrc}
-        title="404 - BubbaBlox"
+        title="404"
         onError={(e) => {
           console.error("iframe failed to load:", e);
         }}

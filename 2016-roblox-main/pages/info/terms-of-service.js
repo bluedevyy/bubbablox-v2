@@ -43,7 +43,7 @@ const tos = () => {
       <iframe
         className={classes.iframe}
         src={iframeSrc}
-        title="Terms of Service - BubbaBlox"
+        title="Terms of Service"
         onError={(e) => {
           console.error("iframe failed to load:", e);
         }}
