@@ -70,7 +70,7 @@
 			
 			<ul class="navbar-nav px-3">
 				<li class="nav-item text-nowrap d-none d-md-block">
-					<a class="nav-link" href="/home">Back to BubbaBlox</a>
+					<a class="nav-link" href="/home">Back to Site</a>
 				</li>
 			</ul>
 		</div>
