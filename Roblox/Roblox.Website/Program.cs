@@ -85,6 +85,14 @@ Roblox.Configuration.BotAuthorization = configuration.GetSection("BotAuthorizati
 IConfiguration gameServerConfig = new ConfigurationBuilder().AddJsonFile("game-servers.json").Build();
 Roblox.Configuration.GameServerIpAddresses = gameServerConfig.GetSection("GameServers").Get<IEnumerable<GameServerConfigEntry>>();
 Roblox.Configuration.RccAuthorization = configuration.GetSection("RccAuthorization").Value;
+// Internal JWT signing secrets. Prefer appsettings; otherwise use a random per-boot
+// secret so nothing is hardcoded (restarting just invalidates in-flight cookies).
+Roblox.Configuration.UserAgentBypassSecret = configuration.GetSection("UserAgentBypassSecret").Value;
+if (string.IsNullOrEmpty(Roblox.Configuration.UserAgentBypassSecret))
+    Roblox.Configuration.UserAgentBypassSecret = Guid.NewGuid().ToString();
+Roblox.Configuration.VerificationSecret = configuration.GetSection("VerificationSecret").Value;
+if (string.IsNullOrEmpty(Roblox.Configuration.VerificationSecret))
+    Roblox.Configuration.VerificationSecret = Guid.NewGuid().ToString();
 Roblox.Configuration.AllowedQuietGetJson = configuration.GetSection("AllowedQuietGetJson").GetChildren().Select(c => c.Value);
 Roblox.Configuration.AssetValidationServiceUrl =
     configuration.GetSection("AssetValidation:BaseUrl").Value;

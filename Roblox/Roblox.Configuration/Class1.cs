@@ -53,7 +53,10 @@ public static class Configuration
 	public static string RccService2020Path { get; set; }
 	public static string LuaScriptPath { get; set; }
 	public static IEnumerable<string> AllowedQuietGetJson { get; set; } = Array.Empty<string>();
-    public const string UserAgentBypassSecret = "503534DA-F2F8-4681-9B37-15EE9EAE88DC4D0FAE23-F672-4BC6-8D5F-E35A2939680DB1980985-AF9C-4B2E-B19E-67005FBAD27B";
+    // Signing secrets for internal JWT cookies. Set from appsettings.json; if left
+    // empty a random secret is generated at startup (see Program.cs). Never hardcode.
+    public static string UserAgentBypassSecret { get; set; }
+    public static string VerificationSecret { get; set; }
     public static long PackageShirtAssetId { get; set; }
     public static long PackagePantsAssetId { get; set; }
     public static long PackageLeftArmAssetId { get; set; }

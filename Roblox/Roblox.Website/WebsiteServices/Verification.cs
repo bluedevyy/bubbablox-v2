@@ -45,7 +45,7 @@ public class ApplicationWebsiteService : WebsiteService
     
     private const string VerificationPhraseCookieName = "es-verification-phrase";
     private static EasyJwt jwt { get; } = new EasyJwt();
-    private const string VerificationSecret = "5FA10C5C-8179-4E76-BF60-8E3CF9786C3C360F5313-2C0D-4A22-BCB6-6C47CF6683449267E62C-605B-4FB0-848B-FA48ECC4F581";
+    private static string VerificationSecret => Roblox.Configuration.VerificationSecret;
 
     /// <summary>
     /// Verify that the provided verificationPhrase exists on the socialUrls profile
