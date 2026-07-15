@@ -214,6 +214,15 @@ A user's type is stored via `UpdateAvatarType(userId, 2)` (`2 = R15`, `1 = R6`).
   previously this line was mis-formatted and printed `0` with no detail, which made
   R15 look silently broken.
 
+### Quick render smoke test
+With the renderer **and** its RCC running, from the `renderer` folder:
+```
+npm run smoke -- 1818        # renders one asset thumbnail and checks a PNG came back
+```
+Exit code 0 = the full renderer → RCC → Lua path works; non-zero prints why it failed
+(renderer down, RCC down, timeout, etc.). This is the fastest way to confirm rendering
+before debugging avatars.
+
 ### Common R15/R6 pitfalls
 - **R15 renders nothing, no error:** you were almost certainly hitting the logging bug
   fixed here — re-check the console for the actual message now.
@@ -222,6 +231,53 @@ A user's type is stored via `UpdateAvatarType(userId, 2)` (`2 = R15`, `1 = R6`).
   full-body **thumbnail** should be R15.
 - **Everything times out:** the render timeout is 30 s; check RCC actually started and
   that ports aren't blocked by a firewall.
+
+---
+
+## 9a. Adding assets (clothing, decals, audio, models)
+
+Uploading an asset touches several services. If any are down, uploads fail — this
+is the usual cause of "adding assets doesn't work".
+
+**Dependencies that must be running/configured:**
+- **Asset validation (Go)** on `http://localhost:4300` — set as `AssetValidation.BaseUrl`
+  in `appsettings.json`. Validates place/model files.
+- **Image validator (Python)** on `:3030` — detects audio hidden in images.
+- **FFMPEG** on `PATH` — required to process audio uploads.
+- **Storage directories** in `appsettings.json → Directories` (`Storage`, `Asset`,
+  `Public`, `Thumbnails`) must exist and be writable.
+- **Renderer + RCC** — needed to generate the item's thumbnail after upload
+  (see §9). Without it the asset is created but shows no thumbnail.
+
+**As a normal user (the site's Create/Develop page):**
+1. Log in, go to **Create** (develop).
+2. Pick the asset type (T-Shirt, Shirt, Pants, Decal, Audio, Model).
+3. Upload the file (shirt/pants use the Roblox clothing template; a T-Shirt is just
+   an image). Clothing costs the configured upload fee.
+4. The file is validated → stored → queued for a thumbnail render → listed under
+   your Creations. Shirts/pants must match the template dimensions or validation
+   rejects them.
+
+**As an admin (`/admin`):**
+- **Create Asset / Create Clothing** — upload an item directly (bypasses the fee).
+- **Upload Custom Item** — upload an arbitrary asset with a chosen type.
+- **Copy Roblox Clothing / Copy UGC / Copy Roblox Bundle** — clone by Roblox asset
+  id (needs `AssetProxy` or a working `AssetUrl` so the source file can be fetched).
+- **Create Asset Version** — replace the content of an existing asset (re-renders it).
+
+**Verify uploads work end-to-end:**
+1. Confirm `curl http://localhost:4300/` returns `AssetValidationServiceV2 OK`.
+2. Upload a T-Shirt (simplest path — just a PNG).
+3. It should appear in your Creations with a thumbnail within a few seconds.
+4. If the item appears but has no image, the renderer/RCC is the problem (§9), not
+   the upload itself.
+
+**Common upload failures:**
+- *"One or more assets are invalid"* → the validation service (`:4300`) is down or
+  the file doesn't meet requirements (e.g. wrong clothing template size).
+- *Audio rejected* → FFMPEG not on `PATH`, or the image validator flagged it.
+- *No thumbnail* → renderer/RCC not running or misconfigured.
+- *500 on upload* → check the `Directories` paths exist and are writable.
 
 ---
 
