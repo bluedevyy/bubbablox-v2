@@ -39,13 +39,31 @@ app.get('/stop', (req, res) => {
     process.exit(0);
 });
 
+// Keys that must never be reachable via the reflective invoker below, plus every
+// member inherited from Object.prototype (toString, valueOf, __proto__, ...).
+const objectProtoKeys = new Set(Object.getOwnPropertyNames(Object.prototype));
+const isAllowedMethod = (name: unknown): name is string => {
+	if (typeof name !== 'string') return false;
+	if (name === 'constructor' || name === 'prototype' || name === '__proto__') return false;
+	if (objectProtoKeys.has(name)) return false;
+	// @ts-ignore
+	return typeof handle[name] === 'function';
+};
+
 app.post('/api/public-method', (req, res, next) => {
 	const b = req.body;
+	if (!b || typeof b !== 'object') {
+		return res.status(400).json({ success: false, message: 'BadRequest' }).end();
+	}
 	console.log('[' + req.method + '] ' + req.url + ' - ' + b.method);
+	if (!isAllowedMethod(b.method)) {
+		return res.status(404).json({ success: false, message: 'NotFound' }).end();
+	}
+	const args = Array.isArray(b.arguments) ? b.arguments : [];
 	// @ts-ignore
 	const f = handle[b.method];
 	if (typeof f === 'function') {
-		const c = f.apply(handle, b.arguments);
+		const c = f.apply(handle, args);
 		if (typeof c === 'object' && c.then) {
 			(c as Promise<any>).then((result) => {
 				res.status(200).json(result).end();

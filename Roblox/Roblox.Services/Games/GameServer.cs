@@ -697,6 +697,7 @@ public class GameServerService : ServiceBase
 			("%placeId%", $"{placeId}").Replace
 			("%creatorId%", $"{uni.builderId}").Replace
 			("%apiKey%", $"{Configuration.RccAuthorization}").Replace
+			("%webhook%", Configuration.Webhook ?? "").Replace
 			("_AUTHORIZATION_STRING_", Configuration.GameServerAuthorization);
 
 		string XML = $@"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -792,6 +793,7 @@ public class GameServerService : ServiceBase
 			("%placeId%", $"{placeId}").Replace
 			("%creatorId%", $"{uni.builderId}").Replace
 			("%apiKey%", $"{Configuration.RccAuthorization}").Replace
+			("%webhook%", Configuration.Webhook ?? "").Replace
 			("_AUTHORIZATION_STRING_", Configuration.GameServerAuthorization);
 
 		string XML = $@"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -889,6 +891,7 @@ public class GameServerService : ServiceBase
 			("%placeId%", $"{placeId}").Replace
 			("%creatorId%", $"{uni.builderId}").Replace
 			("%apiKey%", $"{Configuration.RccAuthorization}").Replace
+			("%webhook%", Configuration.Webhook ?? "").Replace
 			("_AUTHORIZATION_STRING_", Configuration.GameServerAuthorization);
 
 		string XML = $@"<?xml version=""1.0"" encoding=""utf-8""?>

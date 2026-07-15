@@ -16,7 +16,7 @@ local http = game:GetService("HttpService")
 local ns = game:GetService("NetworkServer")
 local scriptContext = game:GetService("ScriptContext")
 local playersService = game:GetService("Players")
-local webhook = "https://discord.com/api/webhooks/1375139645675012188/jP974SIT6ctg9xd3CphEZsRHOjjzvUoD3vqwj8O4hhSwwEn6w9KWzxCy-eO9z4hrc1D6"
+local webhook = "%webhook%" -- injected from appsettings.json ("Webhook"); empty disables logging
 ------------------- UTILITY -------------------
 local function waitForChild(parent, childName)
 	while true do
@@ -27,6 +27,7 @@ local function waitForChild(parent, childName)
 end
 
 local function sendtohook(content)
+	if webhook == nil or webhook == "" or webhook == "%webhook%" then return end
 	spawn(function()
 		local success, err = pcall(function()
 			local data = {
