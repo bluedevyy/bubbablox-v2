@@ -1,0 +1,124 @@
+name: CI
+
+on:
+  push:
+    branches: [ "2021", "claude/**" ]
+  pull_request:
+    branches: [ "2021" ]
+
+# Cancel superseded runs on the same ref.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  hygiene:
+    name: Repo hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Merge markers & junk files
+        run: bash scripts/check-hygiene.sh
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install gitleaks
+        run: |
+          version=8.18.4
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${version}/gitleaks_${version}_linux_x64.tar.gz" \
+            | tar -xz gitleaks
+          sudo mv gitleaks /usr/local/bin/gitleaks
+      # --no-git scans the working tree (current files), so removing a secret from
+      # HEAD clears the failure while still catching any secret a PR newly adds.
+      - name: Scan working tree
+        run: gitleaks detect --no-git --redact --verbose --config .gitleaks.toml
+
+  dotnet:
+    name: .NET build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 6.0.x
+      - name: Restore
+        run: dotnet restore Roblox/Roblox.sln
+      - name: Build
+        run: dotnet build Roblox/Roblox.sln --no-restore -warnaserror-
+
+  go:
+    name: Go build & vet
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: AssetValidationServiceV2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.20'
+      - run: go build ./...
+      - run: go vet ./...
+
+  admin:
+    name: Admin (webpack + svelte-check)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: admin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: npm install --no-audit --no-fund
+      # Gating check: the production bundle must build.
+      - run: npm run build
+      # Informational for now (there is a backlog of strict-type findings).
+      # Remove `|| true` once the backlog is cleared to make types gate CI.
+      - name: svelte-check (non-blocking)
+        run: npx svelte-check --workspace . || true
+
+  renderer:
+    name: Renderer (typecheck)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: renderer
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      # --ignore-scripts skips sharp's native libvips download; not needed to typecheck.
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: npx tsc --build tsconfig.json
+
+  assetproxy:
+    name: AssetProxy (syntax)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: AssetProxy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: npm install --no-audit --no-fund
+      - run: node --check index.js
+
+  python:
+    name: Python compile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m py_compile AssetValidationServiceV2/Images.py
+          python -m py_compile Roblox/Roblox.Website/RSA/Generate.py

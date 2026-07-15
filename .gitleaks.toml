@@ -1,0 +1,27 @@
+title = "bubbablox gitleaks config"
+
+# Build on gitleaks' built-in rules, then allowlist vendored content and
+# generated files that would otherwise produce noise (Roblox RCC game content,
+# the bundled front-end, node_modules, lockfiles, binaries).
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Vendored content, generated bundles and binaries"
+paths = [
+  '''RCCService.*/''',
+  '''2016-roblox-main/''',
+  '''Roblox/Roblox\.Libraries/Json/''',
+  '''.*node_modules/.*''',
+  '''.*package-lock\.json$''',
+  '''admin/public/build/.*''',
+  '''.*\.(png|jpe?g|gif|ico|webp|bmp|tiff|rbxm|rbxmx|rbxl|mesh|dll|exe|pdb|br|gz|zip|rar|7z)$''',
+]
+# Placeholder secrets in the *.example config files are intentional.
+regexTarget = "match"
+regexes = [
+  '''Your[A-Za-z]+''',
+  '''AVerySecure[A-Za-z]+''',
+  '''ReplaceMeWith[A-Za-z]+''',
+  '''changeme''',
+]
