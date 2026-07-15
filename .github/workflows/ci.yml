@@ -47,7 +47,7 @@ jobs:
       - name: Restore
         run: dotnet restore Roblox/Roblox.sln
       - name: Build
-        run: dotnet build Roblox/Roblox.sln --no-restore -warnaserror-
+        run: dotnet build Roblox/Roblox.sln --no-restore
 
   go:
     name: Go build & vet
