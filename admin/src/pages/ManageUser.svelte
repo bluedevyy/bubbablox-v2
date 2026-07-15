@@ -5,6 +5,8 @@
 	import * as rank from "../stores/rank";
 	export let userId: string;
 
+    let disabled = false;
+
     rank.promise.then(() => {
         if (!rank.hasPermission("GetUserDetailed")) {
             errorMessage = "You don't have permission to manage users.";

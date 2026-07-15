@@ -9,7 +9,9 @@ from io import BytesIO
 
 app = FastAPI()
 
-Webhook = "https://discord.com/api/webhooks/1416593295756492801/UN1vlLt_gT1Oz2WSxRXALBy5rTW63NzrOJCad_7ci67zAVwU9jX-Myq97_m4Lrlc64Cz"
+# Configure via the AUDIO_WEBHOOK_URL environment variable. Leaving it unset
+# disables the "found bad audio in image" notification (validation still works).
+Webhook = os.environ.get("AUDIO_WEBHOOK_URL", "")
 
 AudioSignatures = {
     b"ID3": ".mp3",
@@ -19,6 +21,8 @@ AudioSignatures = {
 }
 
 async def SendAudioToDiscord(file_path, ext):
+    if not Webhook:
+        return
     async with aiohttp.ClientSession() as session:
         form = aiohttp.FormData()
         form.add_field(

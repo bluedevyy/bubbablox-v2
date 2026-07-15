@@ -20,6 +20,7 @@ app.get("/asset/", async (req, res) => {
     try {
         const id = req.query.id;
         if (!id) return res.status(400).send("Missing id");
+        if (!/^\d+$/.test(String(id))) return res.status(400).send("Invalid id");
 
         const filePath = path.join(cacheFolder, id);
 

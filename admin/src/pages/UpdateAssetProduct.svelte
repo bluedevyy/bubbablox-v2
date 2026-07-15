@@ -234,9 +234,9 @@
 											return;
 										}
 										
-										offsaleDeadline = new {
-											value = offset,
-											unit = offsaleOffsetUnit
+										offsaleDeadline = {
+											value: offset,
+											unit: offsaleOffsetUnit
 										};
 									}
 
