@@ -12,6 +12,7 @@ public class GameServerConfigEntry
 public static class Configuration
 {
     public static string CdnBaseUrl { get; set; }
+    public static string CorsMiddlewareUrl { get; set; }
     public static string StorageDirectory { get; set; }
     public static string AssetDirectory { get; set; }
     public static string PublicDirectory { get; set; }
