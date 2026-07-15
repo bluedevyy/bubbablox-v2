@@ -1137,7 +1137,44 @@ public class UsersService : ServiceBase, IService
         }
         return result;
     }
-	
+
+	// Built-in system accounts that the site expects to exist (see docs/SETUP.md).
+	// id -> username. Their passwords are nullified after creation so nobody can
+	// sign into them directly.
+	public static readonly IReadOnlyList<(long id, string username)> SystemUsers = new List<(long, string)>
+	{
+		(12, "BadDecisions"),
+		(2500, "UGC"),
+	};
+
+	/// <summary>
+	/// Ensures the built-in system accounts (UGC, BadDecisions) exist. Idempotent
+	/// and safe to run on every startup: accounts that already exist are skipped,
+	/// and a failure for one account never blocks the others (or boot).
+	/// </summary>
+	public async Task EnsureSystemUsersExist()
+	{
+		foreach (var (id, username) in SystemUsers)
+		{
+			try
+			{
+				var exists = await db.QuerySingleOrDefaultAsync<bool>(
+					"SELECT EXISTS(SELECT 1 FROM \"user\" WHERE id = :id)", new { id });
+				if (exists)
+					continue;
+
+				await CreateUser(username, Guid.NewGuid().ToString(), Gender.Unknown, id);
+				// "Nullify password" - the account can't be logged into directly.
+				await db.ExecuteAsync("UPDATE \"user\" SET password = '' WHERE id = :id", new { id });
+				Console.WriteLine("[seed] created system user {0} (id {1})", username, id);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("[seed] could not ensure system user {0} (id {1}): {2}", username, id, e.Message);
+			}
+		}
+	}
+
 	public async Task<UserId> CreateUser(string username, string password, Gender gender, long? overrideUserId = null)
 	{
 		if (!Enum.IsDefined(gender))

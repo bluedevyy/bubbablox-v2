@@ -372,7 +372,19 @@ Task.Run(async () =>
     await cmd.ExecuteNonQueryAsync();
 	await using var cmd2 = new NpgsqlCommand("DELETE FROM asset_server;", db);
     await cmd2.ExecuteNonQueryAsync();
-    
+
+    // Auto-create the built-in system accounts (UGC = 2500, BadDecisions = 12) so
+    // they don't have to be made by hand in /admin. Idempotent - skips ones that exist.
+    try
+    {
+        using var users = Roblox.Services.ServiceProvider.GetOrCreate<UsersService>();
+        await users.EnsureSystemUsersExist();
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine("[seed] EnsureSystemUsersExist failed: {0}", e.Message);
+    }
+
     await Task.Delay(TimeSpan.FromSeconds(5));
     using var assets = Roblox.Services.ServiceProvider.GetOrCreate<AssetsService>();
     await assets.FixAssetImagesWithoutMetadata();

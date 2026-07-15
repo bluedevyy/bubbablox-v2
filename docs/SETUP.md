@@ -163,11 +163,19 @@ Under `HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\ROBLOX Corporation\Roblox`:
 From the repo root: `runall.bat`. It starts the front-end, RCC, renderer, asset
 validation, the website, and redis. Then:
 
-1. Visit `http://localhost` and register.
-2. Go to `/admin` and create system players:
-   - **ID 2500** → `UGC`
-   - **ID 12** → `BadDecisions`
-   - Use **Nullify Password** for both.
+1. Visit `http://localhost` and register (the first account becomes user id **1**,
+   the owner — matching `OwnerUserId` in `appsettings.json`).
+
+> **System accounts are now created automatically.** On every startup the website
+> ensures the built-in accounts exist:
+> - **ID 2500** → `UGC`
+> - **ID 12** → `BadDecisions`
+>
+> Both are created with a nullified (empty) password, so nobody can log into them.
+> The seeding is idempotent — existing accounts are left untouched, so upgrading a
+> server that already has these accounts is safe. To add more system accounts, edit
+> `UsersService.SystemUsers` in `Roblox/Roblox.Services/Users/Users.cs`. You no longer
+> need to create them by hand in `/admin`.
 
 ---
 
