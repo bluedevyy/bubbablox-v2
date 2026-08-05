@@ -9,6 +9,14 @@
   <strong>Notice:</strong> Please do not contact the maintainers for basic setup help. If you follow this guide properly, you won't need it.
 </blockquote>
 
+<blockquote>
+  <strong>Quick start (Windows):</strong> run <code>setup.bat</code> from this folder.
+  It installs the prerequisites (via winget), installs all dependencies, copies the
+  example config files, generates the RSA keys, and builds everything. It then prints
+  the few steps that must still be done by hand (editing config values, the hex-patch,
+  and registry keys) &mdash; those are covered in the sections below.
+</blockquote>
+
 <h2>1. Prerequisites</h2>
 <p>Ensure you have the following installed and configured before starting:</p>
 <ul>
