@@ -81,7 +81,7 @@ public class AvatarControllerV1 : ControllerBase
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine($"R15 background render failed: {0}\n{1}", e.Message, e.StackTrace);
+				Console.WriteLine("R15 background render failed: {0}\n{1}", e.Message, e.StackTrace);
 			}
 			finally
 			{

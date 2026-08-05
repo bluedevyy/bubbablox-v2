@@ -2862,6 +2862,5 @@ WHERE asset_type = :asset_type AND asset.id < :id AND NOT asset.is_18_plus ORDER
     {
         return false;
     }
-    
-    
 }
+#endregion

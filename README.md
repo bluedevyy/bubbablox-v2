@@ -9,6 +9,14 @@
   <strong>Notice:</strong> Please do not contact the maintainers for basic setup help. If you follow this guide properly, you won't need it.
 </blockquote>
 
+<blockquote>
+  <strong>Quick start (Windows):</strong> run <code>setup.bat</code> from this folder.
+  It installs the prerequisites (via winget), installs all dependencies, copies the
+  example config files, generates the RSA keys, and builds everything. It then prints
+  the few steps that must still be done by hand (editing config values, the hex-patch,
+  and registry keys) &mdash; those are covered in the sections below.
+</blockquote>
+
 <h2>1. Prerequisites</h2>
 <p>Ensure you have the following installed and configured before starting:</p>
 <ul>
@@ -95,15 +103,34 @@
 <h2>8. Launch & Final Steps</h2>
 <ol>
   <li>Run <code>runall.bat</code> from the main directory.</li>
-  <li>Navigate to <code>http://localhost</code> and register.</li>
-  <li>Go to <code>/admin</code> and create the following system players:
-    <ul>
-      <li><strong>ID 2500:</strong> Name it <code>UGC</code>.</li>
-      <li><strong>ID 12:</strong> Name it <code>BadDecisions</code>.</li>
-    </ul>
-  </li>
-  <li>Use the "Nullify Password" option for these accounts.</li>
+  <li>Navigate to <code>http://localhost</code> and register. The first account you
+      create becomes the owner (user ID 1).</li>
+  <li><strong>System accounts are created automatically.</strong> On startup the
+      server ensures <code>UGC</code> (ID 2500) and <code>BadDecisions</code> (ID 12)
+      exist, both with nullified passwords. You no longer need to create these by
+      hand. (To add more, edit <code>UsersService.SystemUsers</code>.)</li>
 </ol>
+
+<h2>9. Verify it works</h2>
+<ol>
+  <li><strong>Website:</strong> <code>http://localhost</code> loads.</li>
+  <li><strong>Asset validation:</strong> <code>curl http://localhost:4300/</code>
+      returns <code>AssetValidationServiceV2 OK</code>.</li>
+  <li><strong>Rendering:</strong> from the <code>renderer</code> folder (with the
+      renderer and RCC running) run <code>npm run smoke -- 1818</code> &mdash; it
+      should return a PNG.</li>
+  <li><strong>Uploads:</strong> upload a T-Shirt (a PNG); it should appear in your
+      Creations with a thumbnail.</li>
+</ol>
+
+<hr />
+
+<blockquote>
+  <strong>Full guide:</strong> see <a href="docs/SETUP.md"><code>docs/SETUP.md</code></a>
+  for the architecture overview, port map, R6/R15 rendering details, an
+  "Adding assets" section, and a security-hardening checklist to complete before
+  going live.
+</blockquote>
 
 <div align="center">
   <p><strong>Setup Complete.</strong></p>

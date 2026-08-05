@@ -85,6 +85,14 @@ Roblox.Configuration.BotAuthorization = configuration.GetSection("BotAuthorizati
 IConfiguration gameServerConfig = new ConfigurationBuilder().AddJsonFile("game-servers.json").Build();
 Roblox.Configuration.GameServerIpAddresses = gameServerConfig.GetSection("GameServers").Get<IEnumerable<GameServerConfigEntry>>();
 Roblox.Configuration.RccAuthorization = configuration.GetSection("RccAuthorization").Value;
+// Internal JWT signing secrets. Prefer appsettings; otherwise use a random per-boot
+// secret so nothing is hardcoded (restarting just invalidates in-flight cookies).
+Roblox.Configuration.UserAgentBypassSecret = configuration.GetSection("UserAgentBypassSecret").Value;
+if (string.IsNullOrEmpty(Roblox.Configuration.UserAgentBypassSecret))
+    Roblox.Configuration.UserAgentBypassSecret = Guid.NewGuid().ToString();
+Roblox.Configuration.VerificationSecret = configuration.GetSection("VerificationSecret").Value;
+if (string.IsNullOrEmpty(Roblox.Configuration.VerificationSecret))
+    Roblox.Configuration.VerificationSecret = Guid.NewGuid().ToString();
 Roblox.Configuration.AllowedQuietGetJson = configuration.GetSection("AllowedQuietGetJson").GetChildren().Select(c => c.Value);
 Roblox.Configuration.AssetValidationServiceUrl =
     configuration.GetSection("AssetValidation:BaseUrl").Value;
@@ -372,7 +380,19 @@ Task.Run(async () =>
     await cmd.ExecuteNonQueryAsync();
 	await using var cmd2 = new NpgsqlCommand("DELETE FROM asset_server;", db);
     await cmd2.ExecuteNonQueryAsync();
-    
+
+    // Auto-create the built-in system accounts (UGC = 2500, BadDecisions = 12) so
+    // they don't have to be made by hand in /admin. Idempotent - skips ones that exist.
+    try
+    {
+        using var users = Roblox.Services.ServiceProvider.GetOrCreate<UsersService>();
+        await users.EnsureSystemUsersExist();
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine("[seed] EnsureSystemUsersExist failed: {0}", e.Message);
+    }
+
     await Task.Delay(TimeSpan.FromSeconds(5));
     using var assets = Roblox.Services.ServiceProvider.GetOrCreate<AssetsService>();
     await assets.FixAssetImagesWithoutMetadata();

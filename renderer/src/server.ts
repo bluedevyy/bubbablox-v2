@@ -8,6 +8,26 @@ import * as HTTPExceptions from 'ts-httpexceptions';
 import * as WSLib from 'ws';
 import {getUploadCallbacks} from './rendering';
 
+// The only methods the website is allowed to invoke remotely (over WS or the
+// /api/public-method bridge). Anything not in this set is rejected, so the
+// transport can never reach arbitrary/inherited members of the handler.
+const ALLOWED_COMMANDS = new Set<string>([
+	'GenerateThumbnail',
+	'GenerateThumbnailHeadshot',
+	'GenerateThumbnailAsset',
+	'GenerateThumbnailHead',
+	'GenerateThumbnailMesh',
+	'GenerateThumbnailGame',
+	'GenerateThumbnailTexture',
+	'GenerateThumbnailTeeShirt',
+	'ConvertRobloxPlace',
+	'ConvertHat',
+	'Cancel',
+]);
+
+const isAllowedCommand = (name: unknown): name is string =>
+	typeof name === 'string' && ALLOWED_COMMANDS.has(name);
+
 // WS - used for rendering
 const ws = new WSLib.Server({
 	port: conf.thumbnailWebsocketPort || 3040,
@@ -41,11 +61,18 @@ app.get('/stop', (req, res) => {
 
 app.post('/api/public-method', (req, res, next) => {
 	const b = req.body;
+	if (!b || typeof b !== 'object') {
+		return res.status(400).json({ success: false, message: 'BadRequest' }).end();
+	}
 	console.log('[' + req.method + '] ' + req.url + ' - ' + b.method);
+	if (!isAllowedCommand(b.method)) {
+		return res.status(404).json({ success: false, message: 'NotFound' }).end();
+	}
+	const args = Array.isArray(b.arguments) ? b.arguments : [];
 	// @ts-ignore
 	const f = handle[b.method];
 	if (typeof f === 'function') {
-		const c = f.apply(handle, b.arguments);
+		const c = f.apply(handle, args);
 		if (typeof c === 'object' && c.then) {
 			(c as Promise<any>).then((result) => {
 				res.status(200).json(result).end();
@@ -112,8 +139,7 @@ export default () => {
 const onMessage = async (data: string) => {
 	let cmd = JSON.parse(data.toString()) as models.Command;
 	console.log('[info] ' + cmd.command)
-	// @ts-ignore
-	if (typeof handle[cmd.command] !== 'function') {
+	if (!isAllowedCommand(cmd.command)) {
 		console.log('[err] sending 404 for invalidCommand: ' + cmd.command)
 		return {
 			status: 404,
@@ -122,8 +148,9 @@ const onMessage = async (data: string) => {
 		};
 	}
 	try {
+		const cmdArgs = Array.isArray(cmd.args) ? cmd.args : [];
 		// @ts-ignore
-		let results = await handle[cmd.command](...cmd.args);
+		let results = await handle[cmd.command](...cmdArgs);
 		return {
 			status: 200,
 			data: results,

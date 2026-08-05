@@ -15,6 +15,7 @@
 	export let userId: string;
 
 	let errorMessage: string | undefined;
+	let disabled = false;
 	import * as rank from "../stores/rank";
     rank.promise.then(() => {
         if (!rank.hasPermission("CreateAsset")) {

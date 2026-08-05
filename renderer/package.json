@@ -6,7 +6,8 @@
     "scripts": {
         "dev": "nodemon -r --ignore --exec ts-node-dev src/index.ts",
         "build": "tsc --build tsconfig.json",
-        "start": "cross-env ENV_FILE=production node ./dist/index.js"
+        "start": "cross-env ENV_FILE=production node ./dist/index.js",
+        "smoke": "node smoke-test.mjs"
     },
     "private": true,
     "keywords": [],
